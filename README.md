@@ -50,7 +50,7 @@ MVVM为什么这重要，因为它解决了很多问题，比如JS中的DOM操�
 
 有线无线、3g4g、TCP/IP、UDP、http、https、http2、websocket、webrtc，虽然很少有候选人能答几个，答总是会问这么一道题
 
-[浏览器工作原理面试题传送门](./network/)
+[网络与协议栈](./network/)
 
 ### 周边能力：后端、测试、项目、交互
 
