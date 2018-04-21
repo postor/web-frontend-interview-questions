@@ -45,6 +45,8 @@ console.log({a,b})
 
 #### [异步逻辑]请实现一个函数，返回一个会延迟若干毫秒后resolve的Promise
 
+#### [数组]列举数组操作相关的函数，他们的参数返回值分别是什么？是否会改变原数组？
+
 ```
 function delayMiliseconds(ms){
   // your code here
@@ -98,7 +100,23 @@ CSS很大的一块在知识面，我很少考察浏览器兼容的问题，但�
 
 MVVM为什么这重要，因为它解决了很多问题，比如JS中的DOM操作和事件绑定，比如css全局作用域干扰问题，总之很重要，对应的一些生态环境也应该划在MVVM范畴里，比如redux、ionic
 
-[MVVM面试题传送门](./mvvm/)
+#### [使用]使用react、angualr、vue中的任意一种将一个字符串的数组渲染到无序列表
+
+#### [使用]在你最熟悉的MVVM框架中，组件的生命周期函数都有哪些，什么时候触发？
+
+#### [使用]使用你最熟悉的MVVM框架，实现一个单选题的组件，组件接收以下属性：题目、答案数组、选择答案编号或回调函数
+
+```
+#react
+<Question title={'1+1='} answers={[0,1,2,3]} onChange={(val)=>console.log(`selected ${val}`)} />
+
+#angular
+<question [title]="q.title" [answers]="q.answers" [(selected)]="q.selected" ></question>
+
+#vue
+<question :title="q.title" :answers="q.answers" :selected.sync="q.selected" ></question>
+
+```
 
 ### 工具使用
 
