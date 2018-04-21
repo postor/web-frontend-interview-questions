@@ -14,7 +14,53 @@ JavaScript、Html、CSS都是必备的基础，但是其中JS还是最重的一�
 
 函数、模块作用域，面向对象（类、继承）、Promise是我比较关注的点，因为它们让很多事情变得简单，你只要不把简单的事情搞得复杂就是高效率了，关注新语法和新api则是加分项
 
-[JavaScript面试题传送门](./javascript/)
+#### [函数作用域]以下代码运行的结果是怎样的？
+
+```
+var a = 5
+var b = 6
+function test(){
+  var a = 7
+  b = 8
+  console.log({a,b})
+}
+
+console.log({a,b})
+test()
+```
+
+#### [函数作用域]请举例描述const与var的不同？
+
+#### [函数作用域、闭包]闭包是什么？什么场景下我们需要闭包哦？
+
+#### [函数作用域]箭头函数和使用function定义函数的区别
+
+#### [模块]请描述CMD和AMD的异同？
+
+#### [面向对象]在JavaScript中如何实现类的继承？你了解多少种实现方法？
+
+#### [面向对象、闭包]在JavaScript中如何实现类的私有变量（面向对象的封装）？
+
+#### [异步逻辑]如何定义一个Promise？我们为什么需要Promise？
+
+#### [异步逻辑]请实现一个函数，返回一个会延迟若干毫秒后resolve的Promise
+
+```
+function delayMiliseconds(ms){
+  // your code here
+  
+  
+}
+
+delayMiliseconds(5000).then(()=>console.log('5 seconds past'))
+
+```
+
+#### [异步逻辑]假设我有5个服务端JSON接口，当所有接口的值都获取到时触发一个函数，该如何实现？如果改成只要有其中任意一个返回了就触发，该如何实现？
+
+#### [接口]代码实现DOM绑定屏幕触摸开始事件，简述冒泡和捕获的区别
+
+#### [接口]是否了解LocalStorage、IndexedDB、WebSocket、WebRTC
 
 ### HTML
 
