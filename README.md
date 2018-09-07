@@ -33,17 +33,216 @@ console.log({a,b})
 
 #### [函数作用域]请举例描述const与var的不同？
 
-#### [函数作用域、闭包]闭包是什么？什么场景下我们需要闭包哦？
+1) 最早是没有const的，所以第一个问题是旧版本浏览器不支持const语法，如果你的用户会使用IE6、IE7那么使用const一定要编译（babel）
+
+2) const是不可变的，和新语法中的let对应，试运行以下代码
+
+```
+var a=1
+a=2
+```
+
+```
+const a=1
+a=2
+```
+
+```
+let a=1
+a=2
+```
+
+
+3) 那么是不是var变量不修改赋值的话就和const一样呢？请尝试分别运行下面两段代码，let又会是怎样的结果？
+
+```
+(()=>{console.log(a);var a=1})()
+```
+
+```
+(()=>{console.log(a);const a=1})()
+```
+
+const、let只在声明后才存在，而var会提前声明
+
+4) 重复声明
+
+```
+var a=1;var a=2; 
+```
+
+```
+const a=1;const a=2; 
+```
+
+5) 总结：新语法规避了之前var语法中提前声明和重复声明容易导致的问题，同时约束了变量let和不可变量const让程序更加容易理解，能用const的时候尽量使用const，其次是let，只有你的代码需要不经过编译直接跑在旧版本得了浏览器的时候才去用var
+
+#### [函数作用域、闭包]闭包是什么？什么场景下我们需要闭包？闭包可能导致什么问题？
+
+1) 闭包是什么？闭包首先还是要先说函数作用域开始，简单说就是一个函数使用了外部作用域的变量，官方解释：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures
+
+```
+function getCounter(){
+  let a = 1
+  return ()=>a++
+}
+const counter = getCounter()
+
+console.log(counter()) //1
+console.log(counter()) //2
+console.log(counter()) //3
+console.log(counter()) //4
+
+```
+
+2) 什么场景下我们需要闭包？闭包可能会导致一些问题所以尽量不用闭包，但是它还是有存在的意义，那就是绝对的私有。我们知道即使是新语法中的类定义变量也是没有私有变量的（TypeScript是有的，也只是在编译到JS的过程中去检测），请尝试运行以下代码
+
+```
+class A {
+  constructor(){
+    this.a=5
+  } 
+  getA(){
+    return this.a
+  }
+}
+
+const a = new A()
+console.log(a.getA()) //5
+console.log(a.a) //5
+```
+
+```
+function A() {
+  var a=5
+  this.getA=function(){
+    return a
+  } 
+}
+
+const a = new A()
+console.log(a.getA()) //5
+console.log(a.a) // undefined
+```
+
+3) 闭包存在的问题？最大的问题在于内存管理，正常来讲你的函数运行完了除了返回值不销毁其他的函数内申请的东西都可以清理，现在用了闭包就不一定了，试着运行以下代码并关注你的内存占用
+
+```
+var theThing = null;
+var replaceThing = function () {
+  var originalThing = theThing;
+  var unused = function () {
+    if (originalThing) // a reference to 'originalThing'
+      console.log("hi");
+  };
+  theThing = {
+    longStr: new Array(1000000).join('*'),
+    someMethod: function () {
+      console.log("message");
+    }
+  };
+};
+setInterval(replaceThing, 1000);
+```
+
+例子来自 https://blog.sessionstack.com/how-javascript-works-memory-management-how-to-handle-4-common-memory-leaks-3f28b94cfbec ，其中也详细讲解了内存泄露的原因
+
 
 #### [函数作用域]箭头函数和使用function定义函数的区别
 
+详细的解释参考 https://stackoverflow.com/questions/34361379/arrow-function-vs-function-declaration-expressions-are-they-equivalent-exch
+
+应该尽量使用箭头函数，除非你需要像jq、vue一类的为了方便使用this，因为
+
+- 即使是绑定this方便使用，不论是bind还是apply都需要理解成本，没有文档的话别人看到你的代码理解都要比一般代码费事一些
+
+- 使用function会导致this丢失，容易出bug
+
+```
+$('a').click(function(e){
+  e.preventDefault()
+  $(this).text('binded')
+
+  setTimeout(function(){
+    console.log(this) // this 变成了 window
+  })
+})
+```
+
+- 有同学会反对说react项目里很多都用bind(this)，我觉得多数还是没有箭头函数时代留下来的习惯，箭头函数还是舒服的多
+
+```
+<a onClic={this.handleClick.bind(this)}>点我点我</a>
+<a onClic={()=>this.handleClick()}>点我点我</a>
+```
+
+总的来说箭头函数的主要意义还是优化可读性和规避bug
+
 #### [模块]请描述CMD和AMD的异同？
+
+这道题已经过时了。估计大家写代码的时候应该都用的Node了吧（CommonJS），然后基于webpack或者browserfy一类的打包转换成浏览器端代码，当然也应该有些历史遗留的requireJS/seaJS项目也绝对是少数，趋势上还是Node的，只有Node才能ssr。
+
+还是想了解具体的异的同直接百度
 
 #### [面向对象]在JavaScript中如何实现类的继承？你了解多少种实现方法？
 
+这个题目考察的不仅仅是继承的实现方式，而核心要考的是面向对象（OOP），要说面向对象就要提到三大特性：继承、封装、多态。如果JS还停留在JQ的年代，仅仅是为了做一些点击事件的绑定，做一些ajax请求，那是用不到了解面向对象的，但现在年代不同了，页面可以做到和一个客户端应用一样复杂（比如说Pinterest），除了业务的逻辑还包含了数据存储、按需加载、增量更新等，算起来比客户端可能还复杂，所以拿JS当脚本语言去做网页就直接沦为二流三流选手了
+
+继承可能是减少重复代码最有效的办法了，所以才需要考察候选人能不能实现它，如果不能就可以直接归档到二流三流的池子了
+
+1) 最好的方式就是新语法中的class了，既干净，有表现出了解新语法，一般而言对编译的过程也有所了解
+
+```
+class B extends A {}
+```
+
+2) 其次的是最原始的prototype继承方法，但是要想覆盖方法的话要小心prototype被修改会影响到父类，会这种方法至少是能实现继承的
+
+```
+function B(){
+  A.call(this)
+}
+B.prototype = A.prototype
+```
+
+3) 更多的方法，其他的方法大多是通过一个函数，用类似2中的逻辑来处理继承，根据具体实现的不同可能性就变多了，性能上，结果上都有差异，甚至可以实现多重继承，具体大家可以去百度谷歌
+
+
 #### [面向对象、闭包]在JavaScript中如何实现类的私有变量（面向对象的封装）？
 
-#### [异步逻辑]如何定义一个Promise？我们为什么需要Promise？
+前面已经提到过闭包，这里重贴一下代码
+
+```
+class A {
+  constructor(){
+    this.a=5
+  } 
+  getA(){
+    return this.a
+  }
+}
+
+const a = new A()
+console.log(a.getA()) //5
+console.log(a.a) //5
+```
+
+```
+function A() {
+  var a=5
+  this.getA=function(){
+    return a
+  } 
+}
+
+const a = new A()
+console.log(a.getA()) //5
+console.log(a.a) // undefined
+```
+
+#### [异步逻辑]我们为什么需要Promise？如何定义一个Promise？
+
+1) 我们为什么需要Promise？首先是避免回调地狱的问题
 
 #### [异步逻辑]请实现一个函数，返回一个会延迟若干毫秒后resolve的Promise
 
