@@ -31,6 +31,8 @@ test()
 console.log({a,b})
 ```
 
+这里test中的新定义的a就和外层的a没有关系了，而b则会被修改，其实var还存在声明提前的问题，大家可以改造下题目让它有更多的坑，个人觉得var不是未来所以变量声明提前的考察也不应该是重点
+
 #### [函数作用域]请举例描述const与var的不同？
 
 1) 最早是没有const的，所以第一个问题是旧版本浏览器不支持const语法，如果你的用户会使用IE6、IE7那么使用const一定要编译（babel）
@@ -240,30 +242,134 @@ console.log(a.getA()) //5
 console.log(a.a) // undefined
 ```
 
-#### [异步逻辑]我们为什么需要Promise？如何定义一个Promise？
+#### [异步逻辑]我们为什么需要Promise？
 
 1) 我们为什么需要Promise？首先是避免回调地狱的问题
 
-#### [异步逻辑]请实现一个函数，返回一个会延迟若干毫秒后resolve的Promise
+```
+const mongoose = require('mongoose');
+const Store = mongoose.model('Store');
+const StoreB = mongoose.model('StoreB');
 
-#### [数组]列举数组操作相关的函数，他们的参数返回值分别是什么？是否会改变原数组？
+exports.createStore = (req, res) => {
+  const store = new Store(req.body)
+  storeB.findOne({
+      id: req.params._id
+  }, function(err, storeB) {
+    if (!err) {
+      store.storeb_id = storeB._id
+      store.save(function(err, store) {
+        if (!err) {
+          // 成功
+          res.redirect('/successPath', store);
+        } else {
+          res.redirect('/someOtherPathB', errors: err)
+        }
+      } else {
+        res.redirect('/someOtherPathA', errors: err)
+      }
+    }
+  });
+};
+```
+
+看似正常的代码，唯一的不正常就是难以阅读和难以维护
 
 ```
-function delayMiliseconds(ms){
-  // your code here
-  
-  
+const mongoose = require('mongoose');
+const Store = mongoose.model('Store');
+const StoreB = mongoose.model('StoreB');
+
+// 使用es6 promise
+mongoose.Promise = global.Promise;
+
+exports.createStore = (req, res, next) => {
+  const store = new Store(req.body);
+  const itemB = StoreB
+    .findOne({ id: req.params._id})
+    .catch(next);
+
+  itemB
+    .then(record => {
+      store.storeb_id = record._id;
+
+      return store.save()
+        .then(stores => Store.find())
+        .then(stores => res.render('index', {stores: stores}))
+    })
+    // 错误处理
+    .catch(next);
+}
+```
+
+使用promise之后逻辑的层次变浅，好理解一些了，async/await在逻辑上还是promise的逻辑，但是更简洁也更易于阅读
+
+```
+const mongoose = require('mongoose');
+const Store = mongoose.model('Store');
+const StoreB = mongoose.model('StoreB');
+
+//  使用es6 promise
+mongoose.Promise = global.Promise
+
+exports.createStore = async (req, res) => {
+  const store = new Store(req.body);
+  // 直到await执行完才会继续
+  const record_we_want_to_associate = await StoreB.findOne({_id: req.params.id});
+  store.storeb_id = record_we_want_to_associate._id
+
+  // 直到await执行完才会继续
+  await store.save();
+  res.render('index', { stores: stores });
+};
+```
+
+以上例子来自 https://medium.com/@ThatGuyTinus/callbacks-vs-promises-vs-async-await-f65ed7c2b9b4 里面还有更多的解释说明
+
+
+#### [异步逻辑]如何定义一个Promise？请实现一个函数，返回一个会延迟若干毫秒后resolve的Promise
+
+```
+function delay(miliSeconds){
+  // your code
 }
 
-delayMiliseconds(5000).then(()=>console.log('5 seconds past'))
+delay(5000).then(()=>console.log('已经过了5秒钟'))
 
+```
+
+这个题目考察的是编写代码的熟练度，这么简单的逻辑写的慢了都要扣分的
+
+```
+function delay(miliSeconds){
+  return new Promise((reject,resolve)=>{
+    setTimeout(resolve,miliSeconds)
+  })
+}
 ```
 
 #### [异步逻辑]假设我有5个服务端JSON接口，当所有接口的值都获取到时触发一个函数，该如何实现？如果改成只要有其中任意一个返回了就触发，该如何实现？
 
+这个题目考察的是经验，知道`Promise.all`和`Promise.race`可能是对新知识保持了学习，也可能是工作中有用到复杂一点的异步逻辑，如果不知道也可以用笨的方法实现就是另一个层次，至少还有解决问题的能力，笨的办法也想不出来就没有分了
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/race
+
+笨的方法的另一层意义在于理解`Promise.all`和`Promise.race`的底层实现，建议大家尝试自己实现一下这两个方法
+
+
 #### [接口]代码实现DOM绑定屏幕触摸开始事件，简述冒泡和捕获的区别
 
+
+
 #### [接口]是否了解LocalStorage、IndexedDB、WebSocket、WebGL、WebRTC、WebAssembly等？
+
+
+#### [数组]列举数组操作相关的函数，他们的参数返回值分别是什么？是否会改变原数组？
+
+
+
 
 ### HTML
 
