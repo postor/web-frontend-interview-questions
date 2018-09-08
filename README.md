@@ -338,7 +338,11 @@ delay(5000).then(()=>console.log('已经过了5秒钟'))
 
 ```
 
-这个题目考察的是编写代码的熟练度，这么简单的逻辑写的慢了都要扣分的
+这个题目考察的是编写代码的熟练度，这么简单的逻辑写的慢了都要扣分的，为什么这么解释呢？
+
+- 没有自己定制过Promise，等价于没有写过复杂的异步逻辑
+- 如果有写过复杂的异步逻辑，都使用回调来实现，那代码质量是不合格的，学习能力也是不合格的
+- 这个题目有多简单，可以对比下官方Promise示例 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
 ```
 function delay(miliSeconds){
@@ -350,7 +354,7 @@ function delay(miliSeconds){
 
 #### [异步逻辑]假设我有5个服务端JSON接口，当所有接口的值都获取到时触发一个函数，该如何实现？如果改成只要有其中任意一个返回了就触发，该如何实现？
 
-这个题目考察的是经验，知道`Promise.all`和`Promise.race`可能是对新知识保持了学习，也可能是工作中有用到复杂一点的异步逻辑，如果不知道也可以用笨的方法实现就是另一个层次，至少还有解决问题的能力，笨的办法也想不出来就没有分了
+这个题目考察的是异步逻辑的使用经验，知道`Promise.all`和`Promise.race`可能是对新知识保持了学习，也可能是工作中有用到复杂一点的异步逻辑，如果不知道也可以用笨的方法实现就是另一个层次，至少还有解决问题的能力，笨的办法也想不出来就没有分了
 
 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
 
@@ -359,11 +363,74 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects
 笨的方法的另一层意义在于理解`Promise.all`和`Promise.race`的底层实现，建议大家尝试自己实现一下这两个方法
 
 
-#### [接口]代码实现DOM绑定屏幕触摸开始事件，简述冒泡和捕获的区别
+#### [接口]代码实现DOM绑定屏幕触摸开始事件，如何实现双指缩放？简述冒泡和捕获的区别
+
+单说这个题目有两个考察点，主要的考察点是事件绑定，其次是移动端开发经验。
+
+1) 事件绑定
+
+```
+target.addEventListener(type, listener[, options]);
+target.addEventListener(type, listener[, useCapture]);
+target.addEventListener(type, listener[, useCapture, wantsUntrusted  ]); // Gecko/Mozilla only
+```
+
+https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+
+这里要注意的就是`useCapture`了，如果父元素和子元素同时绑定了事件，`useCapture`决定了它们触发的顺序，`useCapture`默认为`false`为冒泡是从里向外，如果设置为`true`则表示捕获从`document`开始从外到里
+
+事件绑定只是DOM接口的一个细节动作了，更多DOM操作也可以做许多题目了
+
+2) 移动端开发经验
+
+```
+function startup() {
+  var el = document.getElementsByTagName("canvas")[0];
+  el.addEventListener("touchstart", handleStart, false);
+  el.addEventListener("touchend", handleEnd, false);
+  el.addEventListener("touchmove", handleMove, false);
+  log("initialized.")
+}
+```
+
+https://developer.mozilla.org/zh-CN/docs/Web/API/Touch_events
+
+在pc中大部分都是click事件，移动版则都是touch，你要说都是用别人库里的`rotate`、`zoom`但是不知道原生的`touch`那也只是比完全不会强了一点点
+
+接下来就要考察怎么用`touch`去实现一个`zoom`了，首先还是你是否理解别人封装的手势库的实现方式，其次就是对touch事件的了解和解决问题的思路问题了，这里只写思路（伪码不能直接运行）
+
+```
+let distance = 0, zoom = 1, tmpZoom = zoom
+//touchstart/touchend/touchcancle绑定检查touches个数
+$(el).on('touchstart touchend touchcancle',(e)=>{
+
+  //如果是两个表示双指操作，调用开始缩放
+  if(e.touches.length ==2){
+    distance = getDistance(e.touches[0],e.touches[1])
+    $(el).on('touchmove',(e)=>{
+      //手指移动
+      const newDistance = getDistance(e.touches[0],e.touches[1])
+      const tmpZoom = newDistance/distance * zoom
+      $(el).css({transform:`scale(${tmpZoom})`})
+    })
+
+    return
+  }
+
+  //非双指，解绑事件
+  $(el).off('touchmove')
+  zoom = tmpZoom
+})
 
 
+
+```
 
 #### [接口]是否了解LocalStorage、IndexedDB、WebSocket、WebGL、WebRTC、WebAssembly等？
+
+这个题目考察的是对浏览器新api的跟进和了解了，其实也并不算新，早就有很多项目在用localStorage了，比如多国语言就可以用localStorage存下来所有已经用到的翻译，IndexDB则被用来做前端日志（用于出错诊断统计等），WebSocket实时双向通信、WebGL图形图像3D等，WebRTC网页流媒体，WebAssembly则可以用其他语言写页面逻辑
+
+当然这些只是举例子，有个什么理论来着是未知就是知道东西的周长，反正是知道的东西越多才能发现有更多不知道的东西
 
 
 #### [数组]列举数组操作相关的函数，他们的参数返回值分别是什么？是否会改变原数组？
