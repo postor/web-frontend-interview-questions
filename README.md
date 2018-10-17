@@ -397,32 +397,54 @@ https://developer.mozilla.org/zh-CN/docs/Web/API/Touch_events
 
 在pc中大部分都是click事件，移动版则都是touch，你要说都是用别人库里的`rotate`、`zoom`但是不知道原生的`touch`那也只是比完全不会强了一点点
 
-接下来就要考察怎么用`touch`去实现一个`zoom`了，首先还是你是否理解别人封装的手势库的实现方式，其次就是对touch事件的了解和解决问题的思路问题了，这里只写思路（伪码不能直接运行）
+接下来就要考察怎么用`touch`去实现一个`zoom`了，首先还是你是否理解别人封装的手势库的实现方式，其次就是对touch事件的了解和解决问题的思路问题了，不到50行代码
+
+https://codepen.io/postor/pen/GYrYQM
 
 ```
-let distance = 0, zoom = 1, tmpZoom = zoom
-//touchstart/touchend/touchcancle绑定检查touches个数
-$(el).on('touchstart touchend touchcancle',(e)=>{
+$(document).ready(() => {
+  const scaleMin = 0.1, scaleMax = 2.5
+  let zooming = false, distanceStart = 0, scale = 1, scaleStart = 1, logCounter = 0
+  let $el = $('.box'), $logs = $('.logs')
 
-  //如果是两个表示双指操作，调用开始缩放
-  if(e.touches.length ==2){
-    distance = getDistance(e.touches[0],e.touches[1])
-    $(el).on('touchmove',(e)=>{
-      //手指移动
-      const newDistance = getDistance(e.touches[0],e.touches[1])
-      const tmpZoom = newDistance/distance * zoom
-      $(el).css({transform:`scale(${tmpZoom})`})
+  $(window)
+    .on("touchstart touchend touchcancle", function (e) {
+      if (e.originalEvent.touches.length == 2) {
+        zooming = true
+        distanceStart = getDistance(e.originalEvent.touches);
+        scaleStart = scale
+        return
+      }
+      zooming = false
     })
+  window.addEventListener('touchmove', ev => {
+    ev.preventDefault()
+    ev.stopImmediatePropagation()
 
-    return
-  }
-
-  //非双指，解绑事件
-  $(el).off('touchmove')
-  zoom = tmpZoom
+    if (!zooming) return
+    const newDistance = getDistance(ev.touches);
+    scale = scaleStart * newDistance / distanceStart
+    if (scale < scaleMin) {
+      scale = scaleMin
+    }
+    if (scale > scaleMax) {
+      scale = scaleMax
+    }
+    $logs.prepend(`[${logCounter++}]touchmove|scale=${scale}<br />`)
+    $el.css('transform', `scale(${scale})`)
+  }, { passive: false })
 })
 
-
+function getDistance(touches) {
+  const [t1, t2] = touches
+  const [p1, p2] = [t1, t2].map(p => {
+    return {
+      x: p.screenX,
+      y: p.screenY
+    };
+  });
+  return Math.hypot(p1.x - p2.x, p1.y - p2.y);
+}
 
 ```
 
@@ -435,7 +457,36 @@ $(el).on('touchstart touchend touchcancle',(e)=>{
 
 #### [数组]列举数组操作相关的函数，他们的参数返回值分别是什么？是否会改变原数组？
 
+以下按常用程度排序
 
+1) map 
+
+map的使用场景主要是数组转化，举个例子，我有几个用户放在数组里，但我现在只想要他们的名字逗号分隔的字符串
+
+```
+const arr = [{id:1,name:'josh'},{id:2,name:'postor'}]
+console.log(arr.map(x=>x.name).join(','))
+```
+
+2) reduce
+
+当我们需要遍历并计算出一个结果的时候一般都可以用reduce，举个例子，获取数组中的最大值
+
+```
+const arr = [1,5,2,4,3]
+console.log(arr.reduce((result,next)=>result>next?result:next))
+```
+
+3) filter
+
+
+```
+
+```
+
+5) includes
+
+4) some
 
 
 ### HTML
