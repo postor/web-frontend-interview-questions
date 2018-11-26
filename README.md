@@ -33,6 +33,15 @@ console.log({a,b})
 
 这里test中的新定义的a就和外层的a没有关系了，而b则会被修改，其实var还存在声明提前的问题，大家可以改造下题目让它有更多的坑，个人觉得var不是未来所以变量声明提前的考察也不应该是重点
 
+#### [声明提前]请举例说明变量/函数声明提前
+
+```
+console.log(a,b)
+var a = 5
+console.log(a,b)
+function b(){}
+```
+
 #### [函数作用域]请举例描述const与var的不同？
 
 1) 最早是没有const的，所以第一个问题是旧版本浏览器不支持const语法，如果你的用户会使用IE6、IE7那么使用const一定要编译（babel）
@@ -479,14 +488,145 @@ console.log(arr.reduce((result,next)=>result>next?result:next))
 
 3) filter
 
+过滤器，只保留返回是true的元素
 
 ```
-
+const arr = [1,5,2,4,3]
+console.log(arr.filter(x=>x>2))
 ```
 
-5) includes
+4) includes
 
-4) some
+包含，以前都要用indexOf的
+
+```
+const arr = [1,5,2,4,3]
+console.log(arr.includes(2))
+```
+
+5) some
+
+有一个返回true就可以
+```
+const arr = [1,5,2,4,3]
+console.log(arr.some(x=>x>2))
+```
+
+6) every
+
+全返回true才可以
+```
+const arr = [1,5,2,4,3]
+console.log(arr.every(x=>x>2))
+```
+
+#### 什么事事件代理（event delegation）？
+
+简单地说就是直接的绑定不能绑定到动态产生的元素上，基于事件冒泡的原理可以使用一个上层元素来代理事件，这个功能在jQuery.on中的实现可能是大家最常用的
+
+```
+$( "#dataTable tbody" ).on( "click", "tr", function() {
+  console.log( $( this ).text() );
+});
+```
+
+虽然同样可以解决动态元素事件绑定的问题，这里还是推荐使用MVVM的事件机制来解决
+
+#### `this`在JavaScript中是如何工作的？
+
+this在浏览器中默认是window对象，在对象中，在类中，在apply、call中、在箭头函数中可能都是不同的东西，这个问题很大程度上是OOP（面向对象编程）的范畴，深入理解可以参考我之前的翻译 [《在JavaScript中深入探讨this：为什么编写好的代码至关重要》](https://mp.weixin.qq.com/s/IwSq9D9qDBJp9SHXass40g)
+
+#### 基于`prototype`的继承是如何工作的？
+
+这个问题还是OOP范畴的，你是否知道JavaScript继承机制的基础呢？[《javascript 类的封装和类的继承及原型和原型链详解》](https://mp.weixin.qq.com/s/-OlMnpiK_IoHkYpxtXgsrw)
+
+
+#### 请解释以下代码为什么不是IIFE（立即执行函数表达式），如何调整使其变为IIFE
+
+```
+function foo(){ }();
+```
+
+最明显的问题在于函数foo的命名污染了作用域，不命名就OK了，考点在于IIFE是一种模式，而且是经常用得到的,这个就参考MDN官方吧[《立即执行函数表达式》](https://developer.mozilla.org/zh-CN/docs/Glossary/%E7%AB%8B%E5%8D%B3%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F)
+
+#### `null`、`undefined`和未定义的区别
+
+我个人觉得`null`和`undefined`的区别并没有什么意义
+
+```
+let a = null;
+let b;
+console.log(typeof a);
+// object
+console.log(typeof b);
+// undefined
+```
+
+类型不同，然而并没有什么意义，我为什么要去比较两个对象的类型呢？
+
+```
+null !== undefined 
+// true
+```
+
+`!==`和`===`是先比较类型的，所以他们肯定不相等，按照推荐的编程规范，只有相同类型的变量才用来作比较
+
+```
+let logHi = (str = 'hi') => {
+  console.log(str);
+}
+
+logHi(undefined);
+// hi
+
+logHi(null);
+// null
+```
+
+函数默认值是判断`undefined`来决定赋值的，实际用的一般也是`logHi()`，传入`null`也是相当的脑抽了
+
+所以`undefined`和未定义的比较才是有意义的，比如在Node.js环境下运行以下代码
+
+```
+var b
+console.log(b)
+//undefined
+
+console.log(window)
+//ReferenceError: window is not defined
+```
+
+要知道，Node.js的服务异常如果没有处理的话服务就挂掉了
+
+#### `Array.forEach`和`Array.map`的区别及如何选择
+
+简单的只要知道`map`是为了构造一个新数组，而`forEach`只是单纯的循环，对应的还有`for`、`for...in`等，了解更多可以参考 [《JavaScript完全手册》](https://mp.weixin.qq.com/s/IW5-sdpWFkabKt345CRRzA)
+
+#### `call`、`apply`和`bind`的用法
+
+首先要说尽量不要用，因为这会影响this的绑定，导致代码难以阅读
+
+经常为了使用便利恰好需要绑定this，尤其是在造轮子的场景中，比如jquery、vue都有使用一些绑定
+
+了解更多请参考[《在JavaScript中深入探讨this：为什么编写好的代码至关重要》](https://mp.weixin.qq.com/s/IwSq9D9qDBJp9SHXass40g)
+
+
+#### 属性检测(feature detection)、属性推理(feature inference)和使用UA字符串
+
+这个是用来做浏览器兼容性的，直接检测最靠谱，UA判断最不靠谱，比如某奇葩国产完全照搬chrome的UA
+
+#### 实现封装ajax，简述ajax的优缺点
+
+封装要注意的是IE底层使用ActiveX而其他使用XMLHttpRequest，而优缺点则需要对比产生美了，比如WebSocket、SSE、JSONP
+
+#### 是否有使用过JavaScript模板库？使用的什么库？
+
+在MVVM之前，jQuery直接操作DOM之后，有这样一个模板库活跃的阶段，虽然解决了构造html时候拼接字符串的问题，事件绑定也可以使用事件代理解决，但比起MVVM还是个很low的方案
+
+#### 简要描述调用堆栈
+
+#### 简要描述事件冒泡和捕获
+
 
 
 ### HTML
