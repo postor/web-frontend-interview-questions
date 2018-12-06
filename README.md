@@ -464,7 +464,7 @@ function getDistance(touches) {
 当然这些只是举例子，有个什么理论来着是未知就是知道东西的周长，反正是知道的东西越多才能发现有更多不知道的东西
 
 
-#### [数组]列举数组操作相关的函数，他们的参数返回值分别是什么？是否会改变原数组？
+#### [数组]列举数组遍历操作相关的函数？
 
 以下按常用程度排序
 
@@ -532,6 +532,23 @@ $( "#dataTable tbody" ).on( "click", "tr", function() {
 
 虽然同样可以解决动态元素事件绑定的问题，这里还是推荐使用MVVM的事件机制来解决
 
+为什么默认的事件绑定无法解决动态元素事件绑定的问题？这里举例子就沿用前面代码的逻辑，当tr被点击的时候显示其中的文本
+
+```
+$( "#dataTable tbody tr" ).on( "click", function() {
+  console.log( $( this ).text() );
+});
+```
+
+然后假如我需要ajax一段数据，然后补充到table中
+
+```
+$( "#dataTable tbody" ).append('<tr>click on me and nothing will happen!</tr>');
+```
+
+现在你去点击它，控制台不会有任何输出，但如果你使用的是事件代理的方式，就会有输出了，说回来事件代理也是比较陈旧的技术，在复杂的项目里代理会影响到所有下级内容会变得很难控制，MVVM解决的就更优雅了，MVVM还是推荐react，至少也要会用vue
+
+
 #### `this`在JavaScript中是如何工作的？
 
 this在浏览器中默认是window对象，在对象中，在类中，在apply、call中、在箭头函数中可能都是不同的东西，这个问题很大程度上是OOP（面向对象编程）的范畴，深入理解可以参考我之前的翻译 [《在JavaScript中深入探讨this：为什么编写好的代码至关重要》](https://mp.weixin.qq.com/s/IwSq9D9qDBJp9SHXass40g)
@@ -541,13 +558,63 @@ this在浏览器中默认是window对象，在对象中，在类中，在apply�
 这个问题还是OOP范畴的，你是否知道JavaScript继承机制的基础呢？[《javascript 类的封装和类的继承及原型和原型链详解》](https://mp.weixin.qq.com/s/-OlMnpiK_IoHkYpxtXgsrw)
 
 
-#### 请解释以下代码为什么不是IIFE（立即执行函数表达式），如何调整使其变为IIFE
+#### 解释为什么以下不能称作IIFE：function foo(){}(); 需要改变哪些才能使其成为IIFE？
+
+
+为什么不能呢，因为运行都不会通过，不要被可能存在的全局污染忽悠了，运行出错都没机会污染，出错的原因在于引擎认为这是两句话
 
 ```
-function foo(){ }();
+function foo(){}；();
 ```
 
-最明显的问题在于函数foo的命名污染了作用域，不命名就OK了，考点在于IIFE是一种模式，而且是经常用得到的,这个就参考MDN官方吧[《立即执行函数表达式》](https://developer.mozilla.org/zh-CN/docs/Glossary/%E7%AB%8B%E5%8D%B3%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F)
+所以小括号里是期待有个值的，或者是值的表达式，结果有没有找到值就报错了
+
+```
+function foo(){}();
+
+// Uncaught SyntaxError: Unexpected token )
+```
+
+
+要使其变为IIFE最简单就是加小括号
+
+```
+(function foo(){})(); 
+```
+
+或者
+
+```
+(function foo(){}());
+```
+
+或者没有foo
+
+```
+(function (){})(); 
+(function (){}());
+```
+
+或者箭头函数也可以
+
+```
+(()=>{})(); 
+```
+
+为什么有foo也可以？不会造成全局污染么？
+
+不会，因为小括号限制了它的作用域
+
+两种小括号的括法那种更好一些？是函数括起来还是整个括起来？
+
+```
+(function (){})(); 
+(function (){}());
+```
+
+都一样，看自己喜欢的风格，个人倾向于第一种
+
+考点在于IIFE是一种模式，而且是经常用得到的,这个就参考MDN官方吧[《立即执行函数表达式》](https://developer.mozilla.org/zh-CN/docs/Glossary/%E7%AB%8B%E5%8D%B3%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F)
 
 #### `null`、`undefined`和未定义的区别
 
