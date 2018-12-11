@@ -543,7 +543,7 @@ $( "#dataTable tbody tr" ).on( "click", function() {
 然后假如我需要ajax一段数据，然后补充到table中
 
 ```
-$( "#dataTable tbody" ).append('<tr>click on me and nothing will happen!</tr>');
+$( "#dataTable tbody" ).append('<tr><td>click on me and nothing will happen!</td></tr>');
 ```
 
 现在你去点击它，控制台不会有任何输出，但如果你使用的是事件代理的方式，就会有输出了，说回来事件代理也是比较陈旧的技术，在复杂的项目里代理会影响到所有下级内容会变得很难控制，MVVM解决的就更优雅了，MVVM还是推荐react，至少也要会用vue
@@ -681,6 +681,33 @@ console.log(window)
 #### 属性检测(feature detection)、属性推理(feature inference)和使用UA字符串
 
 这个是用来做浏览器兼容性的，直接检测最靠谱，UA判断最不靠谱，比如某奇葩国产完全照搬chrome的UA
+
+属性检测(feature detection)
+直接判断是否存在
+
+```
+if (window.XMLHttpRequest) {
+    new XMLHttpRequest();
+}
+```
+
+属性推理(feature inference)
+​基于浏览器的厂商实现，特性都是成组的支持，特定的检测几乎可以断定一些其他特性是否支持
+
+```
+if (document.getElementsByTagName) {
+    element = document.getElementById(id);
+}
+```
+
+使用UA字符串
+直接根据UA判断浏览器版本，基于版本推理特性支持
+
+```
+if (navigator.userAgent.indexOf("MSIE 7") > -1){
+    //do something
+}
+```
 
 #### 实现封装ajax，简述ajax的优缺点
 
