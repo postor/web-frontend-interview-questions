@@ -709,11 +709,40 @@ if (navigator.userAgent.indexOf("MSIE 7") > -1){
 }
 ```
 
-#### 实现封装ajax，简述ajax的优缺点
+#### 尽可能详细的解释ajax，实现封装ajax，简述ajax的优缺点
 
-封装要注意的是IE底层使用ActiveX而其他使用XMLHttpRequest，而优缺点则需要对比产生美了，比如WebSocket、SSE、JSONP
+AJAX不是JavaScript的规范，它只是一个哥们“发明”的缩写：Asynchronous JavaScript and XML，意思就是用JavaScript执行异步网络请求。
+
+如果你想把标准写法和IE写法混在一起，可以这么写：
+
+```
+var request;
+if (window.XMLHttpRequest) {
+    request = new XMLHttpRequest();
+} else {
+    request = new ActiveXObject('Microsoft.XMLHTTP');
+}
+```
+
+XMLHttpRequest对象的open()方法有3个参数，第一个参数指定是GET还是POST，第二个参数指定URL地址，第三个参数指定是否使用异步，默认是true，所以不用写。
+
+注意，千万不要把第三个参数指定为false，否则浏览器将停止响应，直到AJAX请求完成。如果这个请求耗时10秒，那么10秒内你会发现浏览器处于“假死”状态。
+
+最后调用send()方法才真正发送请求。GET请求不需要参数，POST请求需要把body部分以字符串或者FormData对象传进去。
+
+
+ajax详解：
+https://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499861493e7c35be5e0864769a2c06afb4754acc6000
+
+从Ajax、JSONP 到 SSE、Websocket
+http://www.52im.net/thread-1038-1-1.html
+
+
+Ajax虽然是最古老的免刷新交互但它现在也依然是主流；一个阻塞可能是考点，IO、网络的逻辑都可能阻塞，避免阻塞才能写出高性能高质量的程序；一个同源策略可能成为考点，这是浏览器安全机制的一部分，从安全和浏览器熟悉的角度都应该掌握；一个技术选型可能是考点，比如简单ajax还是long polling，还是JSONP、SSE、WebSocket他们各有各自的特点，各自适合的场景
 
 #### 是否有使用过JavaScript模板库？使用的什么库？
+
+例如jQuery.template、lodash.template
 
 在MVVM之前，jQuery直接操作DOM之后，有这样一个模板库活跃的阶段，虽然解决了构造html时候拼接字符串的问题，事件绑定也可以使用事件代理解决，但比起MVVM还是个很low的方案
 
@@ -842,6 +871,22 @@ MVVM为什么这重要，因为它解决了很多问题，比如JS中的DOM操�
 #### [优化]Shadow Dom和Virtual Dom的异同？
 
 #### [优化]load和DOMContentLoaded的区别？
+
+DOM层次结构完全构建后，DOMContentLoaded事件将立即触发，当所有image和subframe完成加载时，load事件将触发。
+
+【DOMContentLoaded 来自MDN】
+
+> 当初始的 HTML 文档被完全加载和解析完成之后，DOMContentLoaded 事件被触发，而无需等待样式表、图像和子框架的完成加载。另一个不同的事件 load 应该仅用于检测一个完全加载的页面。 在使用 DOMContentLoaded 更加合适的情况下使用 load 是一个令人难以置信的流行的错误，所以要谨慎。注意：DOMContentLoaded 事件必须等待其所属script之前的样式表加载解析完成才会触发。
+
+DOMContentLoaded可以在大多数现代浏览器上运行，但IE支持不好。 有一些变通方法可以在旧版本的IE上模仿这个事件，比如在jQuery库上使用它们，它们附加了IE特定的onreadystatechange事件。
+
+查看DOMContentLoaded支持情况 https://caniuse.com/domcontentloaded
+
+【load 来自MDN】
+
+> 当一个资源及其依赖资源已完成加载时，将触发load事件。
+
+当初jQuery流行起来也有一部分原因是它使用了DOMContentLoaded，比其他框架使用load事件的效率要高一些
 
 ### 安全
 
