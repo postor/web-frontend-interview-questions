@@ -814,6 +814,22 @@ NaN==NaN
 
 我并不要求大家深究到多深，最主要的问题还是比较的时候应当尽量使用三等号，因为双等号的自动转换类型经常有奇特的效果等着你
 
+#### 请解释同源策略其中与JavaScript相关的部分
+
+这个考点是实际应用经验，同源策略主要是对资源使用的限制，实际的网站应用还是很有可能使用一个其他域名下的接口数据的，代理就不算是和JavaScript相关的解决方案了（即使你强词夺理说用Node做代理），其中比较流行的就是JSONP了，其实JSONP就是利用JavaScript来绕过同源策略的一个方案
+
+随便找的JSONP原理，百度搜应该有许多的 https://blog.csdn.net/hansexploration/article/details/80314948
+
+另一个是js降域的，同样是绕过同源策略，这个方案只能用于同一个根域名的情况
+
+同样百度找的降域解释 https://blog.csdn.net/wu_xiaozhou/article/details/52901374
+
+最后我想提一下CSP，同源策略（CROS）和内容安全策略（CSP）可以简单理解一个控制访问，一个控制使用，事实上也是很少有CSP的题目，但我还是很看好CSP的，也希望这是你能给面试官一个超出预期惊喜的点
+
+https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS
+https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP
+
+
 ### HTML
 
 要知道以前JS可不是老大哥的地位，最初的网页并没有什么脚本，关于HTML我更关注SEO，SEO和语义化是相辅相成的，这里**所有**标签的理解就很重要
