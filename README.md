@@ -750,7 +750,85 @@ Ajax虽然是最古老的免刷新交互但它现在也依然是主流；一个�
 
 #### 简要描述事件冒泡和捕获
 
+#### 数组翻倍，实现`duplicate`函数，让下面的代码工作
 
+```
+duplicate([1,2,3,4,5]); // [1,2,3,4,5,1,2,3,4,5]
+```
+
+这个题的实现方法有很多种，首先推荐spread语法
+
+```
+function duplicate(arr){
+  return [...arr,...arr]
+}
+```
+
+其次concat也行
+
+```
+function duplicate(arr){
+  return arr.concat(arr)
+}
+```
+
+其他的不推荐，也不很需要知道
+
+
+```
+//copyWithin会改变原数组，在需要immutable的场景不要用
+function duplicate(arr){
+  const len = arr.length
+  arr.length=len*2
+  arr.copyWithin(len,0,len)
+  return arr
+}
+
+//push、unshift相当于旧语法中的concat，会改变原数组，在需要immutable的场景不要用
+function duplicate(arr){
+  Array.prototype.unshift.apply(arr,arr)
+  return arr
+}
+
+//flat实验中暂时浏览器不支持，还有个flatMap
+function duplicate(arr){
+  return [arr,arr].flat()
+}
+
+
+//reduce、forEach的实现方法略过
+```
+
+#### 为什么它被称为三元运算符，“三元”这个词是什么意思？
+
+条件（三元）运算符是 JavaScript 仅有的使用三个操作数的运算符。本运算符经常作为if语句的简短形式来使用。
+
+```
+condition ? expr1 : expr2 
+```
+
+`condition` 计算结果为true或false的表达式。
+
+`expr1`, `expr2` 值可以是任何类型的表达式。
+
+通过将三元表达式使用额外的空格，拆分写在多行，使得三元运算符能干净利落地替代一个很长的if/else 表达式。在语法上，它使用了一种更明快的方式来表达了相同的逻辑:
+
+```
+var func1 = function( .. ) {
+  if (condition1) { return value1 }
+  else if (condition2) { return value2 }
+  else if (condition3) { return value3 }
+  else { return value4 }
+}
+
+var func2 = function( .. ) {
+  return condition1 ? value1
+       : condition2 ? value2
+       : condition3 ? value3
+       :              value4
+}
+```
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Conditional_Operator
 
 ### HTML
 
