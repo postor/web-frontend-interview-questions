@@ -876,7 +876,7 @@ function duplicate(arr){
 }
 
 
-//reduce、forEach的实现方法略过
+//reduce、forEach的实现方法略过，还有splice的
 ```
 
 #### 为什么它被称为三元运算符，“三元”这个词是什么意思？
@@ -910,6 +910,58 @@ var func2 = function( .. ) {
 ```
 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Conditional_Operator
 
+#### 什么是`"use strict";`？ 使用它有什么优点和缺点？
+
+ECMAScript 5的严格模式是采用具有限制性JavaScript变体的一种方式，从而使代码显示地 脱离“马虎模式/稀松模式/懒散模式“（sloppy）模式。
+ 
+严格模式通过抛出错误来消除了一些原有静默错误。
+严格模式修复了一些导致 JavaScript引擎难以执行优化的缺陷：有时候，相同的代码，严格模式可以比非严格模式下运行得更快。
+严格模式禁用了在ECMAScript的未来版本中可能会定义的一些语法。
+
+严格模式是推荐的，但是对旧的代码开启严格模式可能会导致系统瘫痪，曾经亚马逊也中过招
+
+https://bugzilla.mozilla.org/show_bug.cgi?id=627531
+
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Strict_mode
+
+#### 创建一个迭代最多100的for循环，同时以3的倍数输出“fizz”，以5的倍数输出“buzz”，以3和5的倍数输出“fizzbuzz”
+
+不用解释吧
+
+#### 一般来说，为什么将全局作用域保持原样并且从不碰它是一个好主意？
+
+- 使用全局变量容易导致bug，
+
+```
+//a.js
+var x=5
+$('#el').click(function(){
+  alert(x)
+})
+
+//b.js
+for(x=0;x<10;x++){
+  console.log(x)
+}
+
+//当你点击el的时候期待的是5，实际会显示10，而且你根本找不到问题出在哪
+```
+
+- 有利于垃圾自动回收
+
+```
+//x不会回收，因为在window对象上
+
+var x = new Array(100000).fill(0);
+
+//x会自动回收
+(()=>{  
+  var x = new Array(100000).fill(0);
+})()
+```
+
+
+
 ### HTML
 
 要知道以前JS可不是老大哥的地位，最初的网页并没有什么脚本，关于HTML我更关注SEO，SEO和语义化是相辅相成的，这里**所有**标签的理解就很重要
@@ -927,6 +979,21 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Cond
 #### [标签]请列举一些HTML5的新标签
 
 #### [模板]是否了解pug\haml之类的html模板？它们带来了哪些便利？
+
+#### 解释单页应用程序是什么以及如何使一个单页应用的SEO友好
+
+- 最好当然是ssr+pushstate，又是单页应用，又可以SEO
+- ssr比较费事，用puppeteer、phatomjs一类生成静态页，又是单页应用，又可以SEO
+- puppeteer、phatomjs也太难了，以前可以使用谷歌支持的那一套hash路由规则，但现在已经没有用了
+
+什么是服务端渲染
+https://www.jianshu.com/p/4acde8b6e5e3
+
+puppeteer服务端渲染
+https://github.com/xiamx/ssr-proxy
+
+谷歌基于hash的路由规则
+https://developers.google.com/search/docs/ajax-crawling/docs/getting-started
 
 ### CSS
 
@@ -1045,6 +1112,10 @@ DOMContentLoaded可以在大多数现代浏览器上运行，但IE支持不好�
 > 当一个资源及其依赖资源已完成加载时，将触发load事件。
 
 当初jQuery流行起来也有一部分原因是它使用了DOMContentLoaded，比其他框架使用load事件的效率要高一些
+
+#### 为什么要使用load事件？ 这个事件有缺点吗？ 你知道任何替代方案，为什么要使用它们？
+
+参考上一题
 
 ### 安全
 
