@@ -1077,6 +1077,17 @@ MVVM为什么这重要，因为它解决了很多问题，比如JS中的DOM操�
 
 #### [TypeScript]是否有使用TypeScript？请定义一个接口，和一个实现该接口的类
 
+#### 使用过哪些工具和技术来调试JavaScript代码？
+
+1. chrome debugbar，功能非常强大，出错定位到行，能够断点可以使用代码`debugger`解决手工不好断点的地方
+2. 移动端调试工具，例如`vorlon.js`，这一类还有别的库，他们通过引入一个库来绑定到远端，通过他们的网页来远程调试
+3. 一些框架使用的工具，比如react开发者工具，redux开发者工具
+4. android你也可以通过USB调试的方式绑定到PC的chrome debugbar，类似的还有iphone safari
+5. Node.js、phonegap、ionic、elctron的调试绑定也是chrome debugbar
+6. 其他的，比如fiddler这种可以给手机做代理，甚至用插件替换一些内容创造环境或者验证修复，比如线上问题调试的时候就比较有用，k6或者ab这种模拟高并发环境重现服务端问题等
+
+暂时想到这么多
+
 ### 浏览器工作原理
 
 这个话题和许多其范畴都有重叠，比如html不使用table布局、CSS的GPU加速、MVVM的虚拟DOM/shadowdom，但我觉得这个重叠区域不必较真到底归谁，只是从不同的维度来看同一个事情而已，比较专属的还是有的，比如资源加载流程、js并发限制、资源管道限制、webkit/v8的一些优化等
