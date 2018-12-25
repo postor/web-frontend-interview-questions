@@ -1049,6 +1049,39 @@ MVVM为什么这重要，因为它解决了很多问题，比如JS中的DOM操�
 
 #### [扩展]简述immutable的含义及使用场景
 
+mutable逻辑
+
+```
+ function mutation(originalArray) {
+    // 直接修改原数组
+    originalArray[0] = "new value";
+    return originalArray;
+  }
+
+  var array = ["some value", "another value"];
+  alert("Return from mutation " + mutation(array));
+  alert("Array: " + array + " (original array has been altered).");
+```
+
+immutable逻辑
+
+```
+ function immutable(originalArray) {
+    // 不修改原数组,
+    // 创建一个原数组的拷贝，并修改这个拷贝
+    // 这样避免了原数组的更改.
+    var newArray = [...originalArray];
+    newArray[0] = "new value";
+    return newArray;
+  }
+
+  var array = ["some value", "another value"];
+  alert("Return from immutable " + immutable(array));
+  alert("Array: " + array + " (original array stay unchanged).");
+```
+
+主流的store和mvvm都是推荐immutable的，因为这样就可以直接对比引用来发现变更了，速度非常快，如果mutable的代码就只能使用深对比来检查数据变化了
+
 #### [扩展]是否使用过rxjs、storybook、i18n、jwt或类似工具？它们的使用场景？
 
 #### [扩展]如何实现服务端渲染（SSR）？服务端渲染的好处有哪些？
