@@ -960,6 +960,15 @@ var x = new Array(100000).fill(0);
 })()
 ```
 
+#### 解释同步和异步函数之间的区别
+
+简单地说就是同步函数会卡住无响应，而异步函数不会，深入一点说又不是这么简单，异步函数是Promise的简化版，Promise又是解决回调地狱问题的方案，就好比面向对象编程和面向函数编程对比一样，功能都是能做的，但整洁合理复用扩展这些东西在复杂项目中尤其重要，使用回调同样不卡，但是不如异步函数可读性好，复用性好; 扩展一点和题目没啥关系的，promise和异步可以不卡看起来好像是多线程，实际上并不是，只是合理利用单进程的资源而已，service worker可以做到真的多线程
+
+参考链接：
+
+事件,Promise和异步函数 https://mp.weixin.qq.com/s?__biz=MzA4NDIzODg4MQ==&mid=2247485414&idx=1&sn=48c5b33271a4361d914651af3e21d267&chksm=9feb70a8a89cf9beb929e78c553629359bd1d36f588c9d7ecbd33a73cb989d2f6c0da3e5e9f3&mpshare=1&scene=23&srcid=1227aMSQJakgOOUe5gBrEBT2#rd
+
+service worker https://mp.weixin.qq.com/s?__biz=MzA4NDIzODg4MQ==&mid=2247485724&idx=1&sn=e3cd3cc64a4954153486dcdebd16b81c&chksm=9feb7e52a89cf7440230d10c16e3cb601fe5ab86aab5bb40b0f0dd5559cb76bbb461faa5ff84&mpshare=1&scene=23&srcid=1227HfdP4VQyonycFAxJNUDZ#rd
 
 
 ### HTML
