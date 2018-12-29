@@ -970,6 +970,40 @@ var x = new Array(100000).fill(0);
 
 service worker https://mp.weixin.qq.com/s?__biz=MzA4NDIzODg4MQ==&mid=2247485724&idx=1&sn=e3cd3cc64a4954153486dcdebd16b81c&chksm=9feb7e52a89cf7440230d10c16e3cb601fe5ab86aab5bb40b0f0dd5559cb76bbb461faa5ff84&mpshare=1&scene=23&srcid=1227HfdP4VQyonycFAxJNUDZ#rd
 
+#### 解释`foo(){}`和`var foo=function(){}`之间的差异
+
+他们的差异就是函数声明提前和变量声明提前之间的差异，直接用代码解释吧
+
+```
+//前面的代码
+foo(){}
+//后面的代码
+```
+
+等价于（函数声明提前）
+
+```
+var foo=function(){}
+//前面的代码
+//后面的代码
+```
+
+```
+//前面的代码
+var foo=function(){}
+//后面的代码
+```
+
+等价于（变量声明提前）
+
+```
+var foo
+//前面的代码
+foo=function(){}
+//后面的代码
+```
+
+`var foo=function(){}`
 
 ### HTML
 
